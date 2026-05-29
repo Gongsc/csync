@@ -1,0 +1,461 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		128581B3E3C0D9098B67998B /* FileSystemEventWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AE0977F9345D4C113E5B81 /* FileSystemEventWatcher.swift */; };
+		19BA401834F22D31A23F4B85 /* ConflictModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539916ABACC351A8A0FC7FE6 /* ConflictModels.swift */; };
+		1B6E1BDDF9EE3B19FCCD5AB9 /* HostStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11935BDFCD8428DFF17D975E /* HostStore.swift */; };
+		29293DB312F189EA574F42C3 /* RsyncExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903BE9BBB33DCFECBB1B4480 /* RsyncExecutor.swift */; };
+		2EB2409502693211C9D548D9 /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A043E93637F1896A32EBDA07 /* MainWindowView.swift */; };
+		336903A4CEA66C2D5081C7C3 /* AutoSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A746A038181BB35D22801246 /* AutoSyncService.swift */; };
+		3A853DAE12B1ED0350FCF49B /* ManagedHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50A9ABEA2DEF76473BCFF54 /* ManagedHost.swift */; };
+		3E875892E3AA4680BD198A90 /* SSHProcessEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103FECA7AF8E44A5FA982506 /* SSHProcessEnvironment.swift */; };
+		48E593F779702638C346744C /* HostPasswordCipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0941680FB0DD8C10E6455EAF /* HostPasswordCipher.swift */; };
+		501F4DF805C8E59B2A62F6A3 /* ProjectStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC1F88122AFF83835E2C44D /* ProjectStore.swift */; };
+		50F1F219DEE5A46514CF905E /* SyncTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB25EF85BDA8E2A1CAF238E /* SyncTask.swift */; };
+		5A55E693D52072FF014C25A7 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDEDCF78ECEF0837153CB99 /* AppSettingsView.swift */; };
+		60F6A148FB7D7C2B5F5E742E /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897676E9085ED129B0342F26 /* Project.swift */; };
+		61C4E3F51E3B72796BC3E241 /* SyncTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C238D24568431D6A7A89 /* SyncTaskManager.swift */; };
+		77D89FBCDF528466FF0BA2FB /* MenuBarContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BDB463F3678B37DEF0839 /* MenuBarContentView.swift */; };
+		84EC162AA2CA17A62616F647 /* FileSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D918DF9A4A6520E0C6193A /* FileSnapshot.swift */; };
+		86B9EAAEFB3EB9867294BCCB /* HostManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC41A0073C7241FE234FCD57 /* HostManagerView.swift */; };
+		9509A4709B2B728E9974CA77 /* HostConnectionTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE01C09CDD418A2C217FA96 /* HostConnectionTester.swift */; };
+		AD8A27176320305987A7154C /* ConflictDecisionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C7A36171C9897848396E4D /* ConflictDecisionSheet.swift */; };
+		D38E003D3765A00016A6C815 /* RsyncProgressParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA456339D822F5DCD7B31482 /* RsyncProgressParser.swift */; };
+		E5F38EBFF23D6917B7A1A4A9 /* ProjectEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15C791F23EB5936540E2373 /* ProjectEditorView.swift */; };
+		E628837313B1D5599C585FA8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AAC1FE8F930BC6BB129BB5 /* AppState.swift */; };
+		E8F909FD6BCAAC4B2FA845FA /* CSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4B58028676CB01004DCCD6 /* CSyncApp.swift */; };
+		E9E2D0C7CE0D9815ACB4B2EF /* ConflictBaselineStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EF04193FCDB96366CF34D54 /* ConflictBaselineStore.swift */; };
+		ECD3BD30399053132D1F93DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68B513EFE7725E13B49DDFB7 /* Assets.xcassets */; };
+		F14AC8EAF4A3D2FFBE9E9132 /* ConflictDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E955E8104D24A6BDC3517E /* ConflictDetector.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0941680FB0DD8C10E6455EAF /* HostPasswordCipher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPasswordCipher.swift; sourceTree = "<group>"; };
+		0EF04193FCDB96366CF34D54 /* ConflictBaselineStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictBaselineStore.swift; sourceTree = "<group>"; };
+		103FECA7AF8E44A5FA982506 /* SSHProcessEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHProcessEnvironment.swift; sourceTree = "<group>"; };
+		11935BDFCD8428DFF17D975E /* HostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostStore.swift; sourceTree = "<group>"; };
+		16E955E8104D24A6BDC3517E /* ConflictDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictDetector.swift; sourceTree = "<group>"; };
+		539916ABACC351A8A0FC7FE6 /* ConflictModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictModels.swift; sourceTree = "<group>"; };
+		53AAC1FE8F930BC6BB129BB5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		5456C238D24568431D6A7A89 /* SyncTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTaskManager.swift; sourceTree = "<group>"; };
+		68B513EFE7725E13B49DDFB7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6FDEDCF78ECEF0837153CB99 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
+		75D918DF9A4A6520E0C6193A /* FileSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSnapshot.swift; sourceTree = "<group>"; };
+		7EE01C09CDD418A2C217FA96 /* HostConnectionTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostConnectionTester.swift; sourceTree = "<group>"; };
+		897676E9085ED129B0342F26 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
+		903BE9BBB33DCFECBB1B4480 /* RsyncExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RsyncExecutor.swift; sourceTree = "<group>"; };
+		94C7A36171C9897848396E4D /* ConflictDecisionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictDecisionSheet.swift; sourceTree = "<group>"; };
+		964BDB463F3678B37DEF0839 /* MenuBarContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarContentView.swift; sourceTree = "<group>"; };
+		9B4B58028676CB01004DCCD6 /* CSyncApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSyncApp.swift; sourceTree = "<group>"; };
+		A043E93637F1896A32EBDA07 /* MainWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowView.swift; sourceTree = "<group>"; };
+		A4AE0977F9345D4C113E5B81 /* FileSystemEventWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemEventWatcher.swift; sourceTree = "<group>"; };
+		A746A038181BB35D22801246 /* AutoSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoSyncService.swift; sourceTree = "<group>"; };
+		BA456339D822F5DCD7B31482 /* RsyncProgressParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RsyncProgressParser.swift; sourceTree = "<group>"; };
+		CC41A0073C7241FE234FCD57 /* HostManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostManagerView.swift; sourceTree = "<group>"; };
+		DCC1F88122AFF83835E2C44D /* ProjectStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectStore.swift; sourceTree = "<group>"; };
+		E15C791F23EB5936540E2373 /* ProjectEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectEditorView.swift; sourceTree = "<group>"; };
+		E50A9ABEA2DEF76473BCFF54 /* ManagedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedHost.swift; sourceTree = "<group>"; };
+		EF66A8414916AECEB08B5BFC /* CSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDB25EF85BDA8E2A1CAF238E /* SyncTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTask.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		01DC9FEA69F5426A5108556E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				6FDEDCF78ECEF0837153CB99 /* AppSettingsView.swift */,
+				94C7A36171C9897848396E4D /* ConflictDecisionSheet.swift */,
+				CC41A0073C7241FE234FCD57 /* HostManagerView.swift */,
+				A043E93637F1896A32EBDA07 /* MainWindowView.swift */,
+				964BDB463F3678B37DEF0839 /* MenuBarContentView.swift */,
+				E15C791F23EB5936540E2373 /* ProjectEditorView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		256F65EDDFF3EF0FD2834C7A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EF66A8414916AECEB08B5BFC /* CSync.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		40A596F59405B137994BF8F1 = {
+			isa = PBXGroup;
+			children = (
+				B12BF4E88F8BA341F525D8D9 /* CSync */,
+				FCE5C85BA1D828AA4CC78A61 /* CSync */,
+				256F65EDDFF3EF0FD2834C7A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4CBEA5F394FFA9652705994D /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				75D918DF9A4A6520E0C6193A /* FileSnapshot.swift */,
+				A4AE0977F9345D4C113E5B81 /* FileSystemEventWatcher.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		661F67F551A837E769175BA9 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				53AAC1FE8F930BC6BB129BB5 /* AppState.swift */,
+				9B4B58028676CB01004DCCD6 /* CSyncApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		775BBC313B95DE4B92FD6E23 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				539916ABACC351A8A0FC7FE6 /* ConflictModels.swift */,
+				E50A9ABEA2DEF76473BCFF54 /* ManagedHost.swift */,
+				897676E9085ED129B0342F26 /* Project.swift */,
+				FDB25EF85BDA8E2A1CAF238E /* SyncTask.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B12BF4E88F8BA341F525D8D9 /* CSync */ = {
+			isa = PBXGroup;
+			children = (
+				68B513EFE7725E13B49DDFB7 /* Assets.xcassets */,
+			);
+			path = CSync;
+			sourceTree = "<group>";
+		};
+		C7FE03310C116940D3469A23 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A746A038181BB35D22801246 /* AutoSyncService.swift */,
+				0EF04193FCDB96366CF34D54 /* ConflictBaselineStore.swift */,
+				0941680FB0DD8C10E6455EAF /* HostPasswordCipher.swift */,
+				11935BDFCD8428DFF17D975E /* HostStore.swift */,
+				DCC1F88122AFF83835E2C44D /* ProjectStore.swift */,
+				5456C238D24568431D6A7A89 /* SyncTaskManager.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		E8E902E4A0B53F4974F53C99 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				16E955E8104D24A6BDC3517E /* ConflictDetector.swift */,
+				7EE01C09CDD418A2C217FA96 /* HostConnectionTester.swift */,
+				903BE9BBB33DCFECBB1B4480 /* RsyncExecutor.swift */,
+				BA456339D822F5DCD7B31482 /* RsyncProgressParser.swift */,
+				103FECA7AF8E44A5FA982506 /* SSHProcessEnvironment.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		FCE5C85BA1D828AA4CC78A61 /* CSync */ = {
+			isa = PBXGroup;
+			children = (
+				661F67F551A837E769175BA9 /* App */,
+				C7FE03310C116940D3469A23 /* Core */,
+				E8E902E4A0B53F4974F53C99 /* Engine */,
+				775BBC313B95DE4B92FD6E23 /* Models */,
+				01DC9FEA69F5426A5108556E /* UI */,
+				4CBEA5F394FFA9652705994D /* Utils */,
+			);
+			name = CSync;
+			path = Sources/CSync;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FAF6AA009B3794E62645A92B /* CSync */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FB8E71D79315B3874A0B80CF /* Build configuration list for PBXNativeTarget "CSync" */;
+			buildPhases = (
+				BA7DEE83BC07C2D16FE3C584 /* Sources */,
+				4CE1E4FF7E6DBE05F74C3CCA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CSync;
+			packageProductDependencies = (
+			);
+			productName = CSync;
+			productReference = EF66A8414916AECEB08B5BFC /* CSync.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		288B7A3016315383DF17A54E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					FAF6AA009B3794E62645A92B = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 55DD6A4D7848718453590C36 /* Build configuration list for PBXProject "CSync" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 40A596F59405B137994BF8F1;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 256F65EDDFF3EF0FD2834C7A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FAF6AA009B3794E62645A92B /* CSync */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4CE1E4FF7E6DBE05F74C3CCA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECD3BD30399053132D1F93DC /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BA7DEE83BC07C2D16FE3C584 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A55E693D52072FF014C25A7 /* AppSettingsView.swift in Sources */,
+				E628837313B1D5599C585FA8 /* AppState.swift in Sources */,
+				336903A4CEA66C2D5081C7C3 /* AutoSyncService.swift in Sources */,
+				E8F909FD6BCAAC4B2FA845FA /* CSyncApp.swift in Sources */,
+				E9E2D0C7CE0D9815ACB4B2EF /* ConflictBaselineStore.swift in Sources */,
+				AD8A27176320305987A7154C /* ConflictDecisionSheet.swift in Sources */,
+				F14AC8EAF4A3D2FFBE9E9132 /* ConflictDetector.swift in Sources */,
+				19BA401834F22D31A23F4B85 /* ConflictModels.swift in Sources */,
+				84EC162AA2CA17A62616F647 /* FileSnapshot.swift in Sources */,
+				128581B3E3C0D9098B67998B /* FileSystemEventWatcher.swift in Sources */,
+				9509A4709B2B728E9974CA77 /* HostConnectionTester.swift in Sources */,
+				86B9EAAEFB3EB9867294BCCB /* HostManagerView.swift in Sources */,
+				48E593F779702638C346744C /* HostPasswordCipher.swift in Sources */,
+				1B6E1BDDF9EE3B19FCCD5AB9 /* HostStore.swift in Sources */,
+				2EB2409502693211C9D548D9 /* MainWindowView.swift in Sources */,
+				3A853DAE12B1ED0350FCF49B /* ManagedHost.swift in Sources */,
+				77D89FBCDF528466FF0BA2FB /* MenuBarContentView.swift in Sources */,
+				60F6A148FB7D7C2B5F5E742E /* Project.swift in Sources */,
+				E5F38EBFF23D6917B7A1A4A9 /* ProjectEditorView.swift in Sources */,
+				501F4DF805C8E59B2A62F6A3 /* ProjectStore.swift in Sources */,
+				29293DB312F189EA574F42C3 /* RsyncExecutor.swift in Sources */,
+				D38E003D3765A00016A6C815 /* RsyncProgressParser.swift in Sources */,
+				3E875892E3AA4680BD198A90 /* SSHProcessEnvironment.swift in Sources */,
+				50F1F219DEE5A46514CF905E /* SyncTask.swift in Sources */,
+				61C4E3F51E3B72796BC3E241 /* SyncTaskManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		09F789EDEABA0CC35A7D89F3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_NAME = CSync;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2CF2D350652467F60CB86ED2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_NAME = CSync;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3B52BB71DDC171A97686D25D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CSync/Info.plist;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gongsc.CSync;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		4EFB0344EA2353D23338AF68 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CSync/Info.plist;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gongsc.CSync;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		55DD6A4D7848718453590C36 /* Build configuration list for PBXProject "CSync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B52BB71DDC171A97686D25D /* Debug */,
+				4EFB0344EA2353D23338AF68 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FB8E71D79315B3874A0B80CF /* Build configuration list for PBXNativeTarget "CSync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2CF2D350652467F60CB86ED2 /* Debug */,
+				09F789EDEABA0CC35A7D89F3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 288B7A3016315383DF17A54E /* Project object */;
+}

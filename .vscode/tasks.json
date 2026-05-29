@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "xcode: Build Debug CSync",
+      "type": "shell",
+      "command": "xcodebuild",
+      "args": [
+        "-project",
+        "CSync.xcodeproj",
+        "-scheme",
+        "CSync",
+        "-configuration",
+        "Debug",
+        "-destination",
+        "platform=macOS",
+        "-derivedDataPath",
+        "./.deriveddata",
+        "CODE_SIGNING_ALLOWED=NO",
+        "build"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "xcode: Build Release CSync",
+      "type": "shell",
+      "command": "xcodebuild",
+      "args": [
+        "-project",
+        "CSync.xcodeproj",
+        "-scheme",
+        "CSync",
+        "-configuration",
+        "Release",
+        "-destination",
+        "platform=macOS",
+        "-derivedDataPath",
+        "./.deriveddata",
+        "CODE_SIGNING_ALLOWED=NO",
+        "build"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "xcode: Run Debug CSync",
+      "type": "shell",
+      "command": "open",
+      "args": [
+        "./.deriveddata/Build/Products/Debug/CSync.app"
+      ],
+      "dependsOn": [
+        "xcode: Build Debug CSync"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
