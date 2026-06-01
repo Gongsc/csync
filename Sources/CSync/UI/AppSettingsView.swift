@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AppSettingsView: View {
     @EnvironmentObject private var appState: AppState
+    @AppStorage("menuBarConfirmQuitEnabled") private var menuBarConfirmQuitEnabled = true
 
     private static let checkTimeFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -66,6 +67,14 @@ struct AppSettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+            }
+
+            Section("界面") {
+                Toggle("退出应用前进行二次确认", isOn: $menuBarConfirmQuitEnabled)
+
+                Text("开启后，点击状态栏退出按钮会先弹出确认框。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)

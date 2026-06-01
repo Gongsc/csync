@@ -7,6 +7,34 @@ private enum InlineHostSelection: Hashable {
     case createNew
 }
 
+private struct LocalHoverHighlightModifier: ViewModifier {
+    let radius: CGFloat
+    let color: Color
+    @State private var isHovering = false
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                RoundedRectangle(cornerRadius: radius)
+                    .fill(isHovering ? color : Color.clear)
+            )
+            .onHover { isHovering = $0 }
+    }
+}
+
+private extension View {
+    func hoverHighlight(
+        radius: CGFloat = 8,
+        color: Color = Color.accentColor.opacity(0.14)
+    ) -> some View {
+        modifier(LocalHoverHighlightModifier(radius: radius, color: color))
+    }
+
+    func destructiveHoverHighlight(radius: CGFloat = 8) -> some View {
+        modifier(LocalHoverHighlightModifier(radius: radius, color: Color.red.opacity(0.12)))
+    }
+}
+
 struct MainWindowView: View {
     @EnvironmentObject private var appState: AppState
 
@@ -114,6 +142,7 @@ struct MainWindowView: View {
                         Image(systemName: "plus.circle")
                     }
                     .help("新增项目")
+                    .hoverHighlight()
 
                     Button {
                         beginEditSelectedProject()
@@ -122,6 +151,7 @@ struct MainWindowView: View {
                     }
                     .help("编辑选中项目")
                     .disabled(selectedStoredProject == nil)
+                    .hoverHighlight()
 
                     Button {
                         guard let selected = appState.projectStore.project(for: selectedProjectID) else { return }
@@ -137,6 +167,7 @@ struct MainWindowView: View {
                     }
                     .help("删除选中项目")
                     .disabled(selectedStoredProject == nil)
+                    .destructiveHoverHighlight()
 
                     Spacer()
 
@@ -147,6 +178,7 @@ struct MainWindowView: View {
                     }
                     .help("手动同步全部项目")
                     .disabled(appState.projectStore.projects.isEmpty)
+                    .hoverHighlight()
 
                     Button {
                         toggleAutoSyncForSelectedProject()
@@ -155,6 +187,7 @@ struct MainWindowView: View {
                     }
                     .help(selectedProjectAutoSyncEnabled ? "关闭自动同步" : "开启自动同步")
                     .disabled(selectedStoredProject == nil)
+                    .hoverHighlight()
 
                     Button {
                         openHostManager(createHost: false)
@@ -162,6 +195,7 @@ struct MainWindowView: View {
                         Image(systemName: "server.rack")
                     }
                     .help("主机管理")
+                    .hoverHighlight()
                 }
                 .buttonStyle(.bordered)
             }
@@ -239,6 +273,7 @@ struct MainWindowView: View {
                             Button("选择目录") {
                                 pickLocalFolder()
                             }
+                            .hoverHighlight()
                         }
 
                         Picker("冲突默认处理", selection: Binding(
@@ -359,6 +394,7 @@ struct MainWindowView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .help("手动同步")
+                        .hoverHighlight(color: Color.blue.opacity(0.18))
 
                         Button {
                             appState.syncManager.cancel(projectID: editingDraft.id)
@@ -367,6 +403,7 @@ struct MainWindowView: View {
                         }
                         .buttonStyle(.bordered)
                         .help("取消当前任务")
+                        .hoverHighlight()
 
                         if let project = appState.projectStore.project(for: editingDraft.id) {
                             Button {
@@ -376,6 +413,7 @@ struct MainWindowView: View {
                             }
                             .buttonStyle(.bordered)
                             .help(project.autoSync ? "关闭自动同步" : "开启自动同步")
+                            .hoverHighlight()
                         }
 
                         if let task = currentTask, task.state.isFailed {
@@ -386,6 +424,7 @@ struct MainWindowView: View {
                             }
                             .buttonStyle(.bordered)
                             .help("重试")
+                            .hoverHighlight()
                         }
 
                         Spacer()
@@ -400,6 +439,7 @@ struct MainWindowView: View {
                         cancelEditing()
                     }
                     .buttonStyle(.bordered)
+                    .hoverHighlight()
 
                     Button("保存") {
                         saveEditing()
@@ -407,6 +447,7 @@ struct MainWindowView: View {
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!canSaveEditor)
+                    .hoverHighlight(color: Color.blue.opacity(0.18))
                 }
             }
             .padding(16)

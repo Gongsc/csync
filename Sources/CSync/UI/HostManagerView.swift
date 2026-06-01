@@ -1,5 +1,33 @@
 import SwiftUI
 
+private struct LocalHoverHighlightModifier: ViewModifier {
+    let radius: CGFloat
+    let color: Color
+    @State private var isHovering = false
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                RoundedRectangle(cornerRadius: radius)
+                    .fill(isHovering ? color : Color.clear)
+            )
+            .onHover { isHovering = $0 }
+    }
+}
+
+private extension View {
+    func hoverHighlight(
+        radius: CGFloat = 8,
+        color: Color = Color.accentColor.opacity(0.14)
+    ) -> some View {
+        modifier(LocalHoverHighlightModifier(radius: radius, color: color))
+    }
+
+    func destructiveHoverHighlight(radius: CGFloat = 8) -> some View {
+        modifier(LocalHoverHighlightModifier(radius: radius, color: Color.red.opacity(0.12)))
+    }
+}
+
 struct HostManagerView: View {
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss
@@ -39,6 +67,7 @@ struct HostManagerView: View {
                 Button("关闭") {
                     dismiss()
                 }
+                .hoverHighlight()
             }
 
             Divider()
@@ -77,6 +106,7 @@ struct HostManagerView: View {
                         }
                         .help("新增主机")
                         .buttonStyle(.bordered)
+                        .hoverHighlight()
 
                         Button(role: .destructive) {
                             pendingDeleteHost = selectedHost
@@ -86,6 +116,7 @@ struct HostManagerView: View {
                         .help("删除选中主机")
                         .buttonStyle(.bordered)
                         .disabled(selectedHost == nil)
+                        .destructiveHoverHighlight()
                     }
                 }
                 .frame(minWidth: 320, maxWidth: 360)
@@ -111,6 +142,7 @@ struct HostManagerView: View {
                                 }
                                 .buttonStyle(.borderedProminent)
                                 .disabled(isTesting || !canTest)
+                                .hoverHighlight(color: Color.blue.opacity(0.18))
 
                                 if isTesting {
                                     ProgressView()
@@ -128,6 +160,7 @@ struct HostManagerView: View {
                                     cancelEditing()
                                 }
                                 .buttonStyle(.bordered)
+                                .hoverHighlight()
 
                                 Button("保存") {
                                     saveEditing()
@@ -135,6 +168,7 @@ struct HostManagerView: View {
                                 .buttonStyle(.borderedProminent)
                                 .keyboardShortcut(.defaultAction)
                                 .disabled(!canSave)
+                                .hoverHighlight(color: Color.blue.opacity(0.18))
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

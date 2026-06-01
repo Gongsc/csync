@@ -3,7 +3,14 @@ import SwiftUI
 
 struct MenuBarContentView: View {
     @EnvironmentObject private var appState: AppState
+    @AppStorage("menuBarConfirmQuitEnabled") private var menuBarConfirmQuitEnabled = true
     @State private var pendingDeleteProject: Project?
+    @State private var activeSubmenuProjectID: UUID?
+    @State private var pendingSubmenuCloseWorkItem: DispatchWorkItem?
+    @State private var hoveredProjectRowID: UUID?
+    @State private var projectRowFrames: [UUID: CGRect] = [:]
+    @State private var menuWindow: NSWindow?
+    @StateObject private var submenuPanelController = SubmenuPanelController()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -19,86 +26,67 @@ struct MenuBarContentView: View {
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(visibleProjects) { project in
-                        let task = appState.syncManager.tasks[project.id]
-                        HStack(alignment: .top, spacing: 8) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                HStack {
-                                    Image(systemName: statusSymbolName(for: task?.state))
-                                        .foregroundStyle(statusColor(for: task?.state))
-                                        .font(.caption)
-                                    Text(project.name)
-                                        .font(.subheadline.weight(.semibold))
-                                        .lineLimit(1)
-                                    Text(task?.modeBadgeText ?? (project.autoSync ? "自动" : "手动"))
-                                        .font(.caption2)
-                                        .foregroundStyle(((task?.triggerKind == .automatic) || (task == nil && project.autoSync)) ? .blue : .secondary)
-                                        .padding(.horizontal, 5)
-                                        .padding(.vertical, 2)
-                                        .background((((task?.triggerKind == .automatic) || (task == nil && project.autoSync)) ? Color.blue : Color.gray).opacity(0.12), in: Capsule())
-                                    Spacer()
-                                    if let task {
-                                        Text(task.updatedAt, style: .time)
-                                            .font(.caption2)
-                                            .foregroundStyle(.secondary)
-                                    }
+                        HStack(spacing: 8) {
+                            Image(systemName: statusSymbolName(for: project))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(statusColor(for: project))
+                                .frame(width: 14)
+                                .help(statusHelpText(for: project))
+
+                            Text(project.name)
+                                .font(.subheadline.weight(.semibold))
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            Text(hostConfigText(for: project))
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                                .frame(width: 170, alignment: .center)
+
+                            Text(project.autoSync ? "自动" : "手动")
+                                .font(.caption2)
+                                .foregroundStyle(project.autoSync ? .blue : .secondary)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
+                                .background((project.autoSync ? Color.blue : Color.gray).opacity(0.12), in: Capsule())
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .contentShape(Rectangle())
+                        .onHover { isHovering in
+                            if isHovering {
+                                hoveredProjectRowID = project.id
+                                openSubmenu(for: project.id)
+                            } else {
+                                if hoveredProjectRowID == project.id {
+                                    hoveredProjectRowID = nil
                                 }
-
-                                Text(task?.state.summaryText ?? (project.autoSync ? "自动同步中" : "尚未触发同步"))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(2)
-
-                                if let task {
-                                    if task.state.isRunning {
-                                        Text(task.runningModeText)
-                                            .font(.caption2)
-                                            .foregroundStyle(task.triggerKind == .automatic ? .blue : .secondary)
-                                    } else if task.state.isQueued {
-                                        Text(task.queuedModeText)
-                                            .font(.caption2)
-                                            .foregroundStyle(task.triggerKind == .automatic ? .blue : .secondary)
-                                    } else if project.autoSync {
-                                        Text("自动同步中")
-                                            .font(.caption2)
-                                            .foregroundStyle(.blue)
-                                    }
-                                } else if project.autoSync {
-                                    Text("自动同步中")
-                                        .font(.caption2)
-                                        .foregroundStyle(.blue)
-                                }
-
-                                if let progress = task?.state.progressValue {
-                                    ProgressView(value: progress)
-                                        .progressViewStyle(.linear)
-                                }
-                            }
-
-                            Menu {
-                                Button(controlActionTitle(for: task?.state)) {
-                                    runControlAction(for: project, state: task?.state)
-                                }
-
-                                Button(autoSyncActionTitle(for: project)) {
-                                    toggleAutoSync(for: project)
-                                }
-
-                                Divider()
-
-                                Button("编辑") {
-                                    appState.requestEditProjectEditor(project: project)
-                                }
-
-                                Button("删除", role: .destructive) {
-                                    pendingDeleteProject = project
-                                }
-                            } label: {
-                                Label("操作", systemImage: "ellipsis.circle")
-                                    .labelStyle(.titleAndIcon)
+                                scheduleSubmenuClose(for: project.id)
                             }
                         }
-                        .padding(8)
-                        .background(Color.gray.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+                        .onTapGesture {
+                            openSubmenu(for: project.id)
+                        }
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill((hoveredProjectRowID == project.id || activeSubmenuProjectID == project.id) ? Color.accentColor.opacity(0.12) : Color.clear)
+                        )
+                        .background(
+                            GeometryReader { proxy in
+                                Color.clear
+                                    .preference(
+                                        key: ProjectRowFramePreferenceKey.self,
+                                        value: [project.id: proxy.frame(in: .global)]
+                                    )
+                            }
+                        )
                     }
 
                     if hiddenProjectCount > 0 {
@@ -112,41 +100,34 @@ struct MenuBarContentView: View {
             Divider()
 
             HStack(spacing: 8) {
-                Button {
+                HoverIconButton(systemImage: "arrow.triangle.2.circlepath", helpText: "手动同步全部项目") {
                     appState.syncAllProjects()
-                } label: {
-                    Image(systemName: "arrow.triangle.2.circlepath")
                 }
-                .help("手动同步全部项目")
 
-                Button {
+                HoverIconButton(systemImage: "plus.circle", helpText: "新增项目") {
                     appState.requestCreateProjectEditor()
-                } label: {
-                    Image(systemName: "plus.circle")
                 }
-                .help("新增项目")
 
-                Button {
+                HoverIconButton(systemImage: "macwindow", helpText: "打开主窗口") {
                     NSApp.activate(ignoringOtherApps: true)
                     NSApp.windows.first?.makeKeyAndOrderFront(nil)
-                } label: {
-                    Image(systemName: "macwindow")
                 }
-                .help("打开主窗口")
 
                 Spacer()
 
-                Button {
-                    NSApplication.shared.terminate(nil)
-                } label: {
-                    Image(systemName: "power")
+                HoverIconButton(systemImage: "power", helpText: "退出", isDestructive: true) {
+                    requestTerminateApp()
                 }
-                .buttonStyle(.bordered)
-                .help("退出")
             }
-            .buttonStyle(.bordered)
         }
         .padding(12)
+        .background(WindowAccessor(window: $menuWindow))
+        .onPreferenceChange(ProjectRowFramePreferenceKey.self) { frames in
+            projectRowFrames = frames
+            if let activeSubmenuProjectID {
+                presentSubmenuPanel(for: activeSubmenuProjectID)
+            }
+        }
         .alert("确认删除项目", isPresented: Binding(
             get: { pendingDeleteProject != nil },
             set: { if !$0 { pendingDeleteProject = nil } }
@@ -161,6 +142,10 @@ struct MenuBarContentView: View {
             }
         } message: {
             Text(pendingDeleteProject.map { "将删除项目“\($0.name)”及其密码信息。" } ?? "")
+        }
+        .onDisappear {
+            cancelPendingSubmenuClose()
+            submenuPanelController.close()
         }
     }
 
@@ -194,74 +179,396 @@ struct MenuBarContentView: View {
         max(0, projectsForMenu.count - maxVisibleProjects)
     }
 
-    private func controlActionTitle(for state: SyncTaskState?) -> String {
-        guard let state else { return "手动同步" }
+    private func autoSyncTitle(for project: Project) -> String {
+        project.autoSync ? "✓ 自动同步" : "自动同步"
+    }
+
+    private func hostConfigText(for project: Project) -> String {
+        "\(project.remoteUser)@\(project.remoteHost)"
+    }
+
+    private func taskState(for project: Project) -> SyncTaskState? {
+        appState.syncManager.tasks[project.id]?.state
+    }
+
+    private func statusSymbolName(for project: Project) -> String {
+        guard let state = taskState(for: project) else {
+            return "circle"
+        }
 
         switch state {
-        case .queued, .running:
-            return "取消"
+        case .succeeded:
+            return "checkmark.circle.fill"
         case .failed:
-            return "重试"
-        case .succeeded, .cancelled:
-            return "手动同步"
+            return "xmark.circle.fill"
+        case .running:
+            return "arrow.triangle.2.circlepath.circle"
+        case .queued:
+            return "clock"
+        case .cancelled:
+            return "minus.circle"
         }
     }
 
-    private func runControlAction(for project: Project, state: SyncTaskState?) {
-        guard let state else {
-            appState.syncNow(project: project)
+    private func statusColor(for project: Project) -> Color {
+        guard let state = taskState(for: project) else {
+            return .secondary
+        }
+
+        switch state {
+        case .queued:
+            return .orange
+        case .running:
+            return .blue
+        case .succeeded:
+            return .green
+        case .failed:
+            return .red
+        case .cancelled:
+            return .secondary
+        }
+    }
+
+    private func statusHelpText(for project: Project) -> String {
+        guard let state = taskState(for: project) else {
+            return "尚未同步"
+        }
+
+        switch state {
+        case .queued:
+            return "同步排队中"
+        case .running:
+            return "同步进行中"
+        case .succeeded:
+            return "最近一次同步成功"
+        case .failed:
+            return "最近一次同步失败"
+        case .cancelled:
+            return "同步已取消"
+        }
+    }
+
+    private func requestTerminateApp() {
+        guard menuBarConfirmQuitEnabled else {
+            terminateApplication()
             return
         }
 
-        switch state {
-        case .queued, .running:
-            appState.syncManager.cancel(projectID: project.id)
-        case .failed:
-            appState.syncManager.retryFailed(projectID: project.id)
-        case .succeeded, .cancelled:
-            appState.syncNow(project: project)
+        presentQuitConfirmationAlert()
+    }
+
+    private func presentQuitConfirmationAlert() {
+        let alert = NSAlert()
+        alert.messageText = "确认退出 CSync"
+        alert.informativeText = "退出后将停止当前自动同步任务。"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "退出")
+        alert.addButton(withTitle: "取消")
+
+        let response = alert.runModal()
+        guard response == .alertFirstButtonReturn else { return }
+        terminateApplication()
+    }
+
+    private func terminateApplication() {
+        let app = NSApplication.shared
+        _ = app.sendAction(#selector(NSApplication.terminate(_:)), to: nil, from: nil)
+
+        // Fallback for menu-bar-only interaction contexts where the first quit request can be swallowed.
+        DispatchQueue.main.async {
+            app.terminate(nil)
         }
     }
 
-    private func autoSyncActionTitle(for project: Project) -> String {
-        project.autoSync ? "关闭自动同步" : "开启自动同步"
+    private func submenuView(for project: Project) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            submenuButton(title: "立即同步", helpText: "立即触发该项目同步") {
+                appState.syncNow(project: project)
+                activeSubmenuProjectID = nil
+            }
+
+            submenuButton(
+                title: autoSyncTitle(for: project),
+                helpText: project.autoSync ? "关闭该项目自动同步" : "开启该项目自动同步"
+            ) {
+                appState.setAutoSyncEnabled(!project.autoSync, for: project.id)
+                activeSubmenuProjectID = nil
+            }
+
+            Divider()
+                .padding(.vertical, 4)
+
+            submenuButton(title: "编辑", helpText: "编辑该项目配置") {
+                appState.requestEditProjectEditor(project: project)
+                activeSubmenuProjectID = nil
+            }
+
+            submenuButton(title: "删除", helpText: "删除该项目及其配置", isDestructive: true) {
+                pendingDeleteProject = project
+                activeSubmenuProjectID = nil
+            }
+        }
+        .padding(6)
+        .frame(width: submenuWidth(for: project), alignment: .leading)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.gray.opacity(0.25), lineWidth: 0.6)
+        )
     }
 
-    private func toggleAutoSync(for project: Project) {
-        appState.setAutoSyncEnabled(!project.autoSync, for: project.id)
+    private func submenuButton(title: String, helpText: String, isDestructive: Bool = false, action: @escaping () -> Void) -> some View {
+        HoverSubmenuButton(title: title, helpText: helpText, isDestructive: isDestructive, action: action)
+    }
+
+    private func openSubmenu(for projectID: UUID) {
+        cancelPendingSubmenuClose()
+        activeSubmenuProjectID = projectID
+        hoveredProjectRowID = projectID
+        presentSubmenuPanel(for: projectID)
+    }
+
+    private func scheduleSubmenuClose(for projectID: UUID) {
+        guard activeSubmenuProjectID == projectID else { return }
+
+        cancelPendingSubmenuClose()
+        let workItem = DispatchWorkItem {
+            if activeSubmenuProjectID == projectID {
+                activeSubmenuProjectID = nil
+                submenuPanelController.close()
+                if hoveredProjectRowID == projectID {
+                    hoveredProjectRowID = nil
+                }
+            }
+        }
+        pendingSubmenuCloseWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.14, execute: workItem)
+    }
+
+    private func cancelPendingSubmenuClose() {
+        pendingSubmenuCloseWorkItem?.cancel()
+        pendingSubmenuCloseWorkItem = nil
+    }
+
+    private func presentSubmenuPanel(for projectID: UUID) {
+        guard let project = visibleProjects.first(where: { $0.id == projectID }) else { return }
+        guard let rowFrame = projectRowFrames[projectID] else { return }
+
+        let content = submenuView(for: project)
+            .onHover { isHoveringSubmenu in
+                if isHoveringSubmenu {
+                    cancelPendingSubmenuClose()
+                    activeSubmenuProjectID = project.id
+                } else {
+                    scheduleSubmenuClose(for: project.id)
+                }
+            }
+
+        submenuPanelController.show(anchorFrame: rowFrame, menuWindow: menuWindow, content: content)
     }
 }
 
-private func statusColor(for state: SyncTaskState?) -> Color {
-    guard let state else { return .secondary }
+private struct ProjectRowFramePreferenceKey: PreferenceKey {
+    static let defaultValue: [UUID: CGRect] = [:]
 
-    switch state {
-    case .queued:
-        return .orange
-    case .running:
-        return .blue
-    case .succeeded:
-        return .green
-    case .failed:
-        return .red
-    case .cancelled:
-        return .secondary
+    static func reduce(value: inout [UUID: CGRect], nextValue: () -> [UUID: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
     }
 }
 
-private func statusSymbolName(for state: SyncTaskState?) -> String {
-    guard let state else { return "circle" }
+private struct WindowAccessor: NSViewRepresentable {
+    @Binding var window: NSWindow?
 
-    switch state {
-    case .succeeded:
-        return "checkmark.circle.fill"
-    case .failed:
-        return "xmark.circle.fill"
-    case .running:
-        return "arrow.triangle.2.circlepath.circle"
-    case .queued:
-        return "clock"
-    case .cancelled:
-        return "minus.circle"
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async {
+            window = view.window
+        }
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        DispatchQueue.main.async {
+            window = nsView.window
+        }
+    }
+}
+
+private struct HoverSubmenuButton: View {
+    let title: String
+    let helpText: String
+    let isDestructive: Bool
+    let action: () -> Void
+    @State private var isHovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline)
+                .foregroundStyle(isDestructive ? Color.red : Color.primary)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(isHovering ? hoverColor : Color.clear)
+                )
+        }
+        .buttonStyle(.borderless)
+        .focusable(false)
+        .onHover { isHovering = $0 }
+        .help(helpText)
+    }
+
+    private var hoverColor: Color {
+        isDestructive ? Color.red.opacity(0.12) : Color.accentColor.opacity(0.12)
+    }
+}
+
+private extension MenuBarContentView {
+    func submenuWidth(for project: Project) -> CGFloat {
+        let titles = [
+            "立即同步",
+            autoSyncTitle(for: project),
+            "编辑",
+            "删除"
+        ]
+
+        let font = NSFont.systemFont(ofSize: 13)
+        let textWidth = titles
+            .map { title in
+                NSString(string: title).size(withAttributes: [.font: font]).width
+            }
+            .max() ?? 0
+
+        let horizontalPadding: CGFloat = 10 * 2
+        let containerPadding: CGFloat = 6 * 2
+        return ceil(textWidth + horizontalPadding + containerPadding)
+    }
+}
+
+@MainActor
+private final class SubmenuPanelController: ObservableObject {
+    private var panel: NSPanel?
+
+    func show<Content: View>(anchorFrame: CGRect, menuWindow: NSWindow?, content: Content) {
+        let hostingView = NSHostingView(rootView: content)
+        hostingView.wantsLayer = true
+
+        let fitting = hostingView.fittingSize
+        let width = max(fitting.width, 120)
+        let height = max(fitting.height, 40)
+
+        let frame = panelFrame(
+            anchorFrame: anchorFrame,
+            panelSize: CGSize(width: width, height: height),
+            menuWindow: menuWindow
+        )
+
+        if panel == nil {
+            let newPanel = NSPanel(
+                contentRect: frame,
+                styleMask: [.borderless, .nonactivatingPanel],
+                backing: .buffered,
+                defer: true
+            )
+            newPanel.isOpaque = false
+            newPanel.backgroundColor = .clear
+            newPanel.hasShadow = true
+            newPanel.hidesOnDeactivate = false
+            newPanel.level = .floating
+            newPanel.collectionBehavior = [.transient, .fullScreenAuxiliary]
+            panel = newPanel
+        }
+
+        panel?.contentView = hostingView
+        panel?.setFrame(frame, display: true)
+        panel?.orderFront(nil)
+    }
+
+    private func panelFrame(anchorFrame: CGRect, panelSize: CGSize, menuWindow: NSWindow?) -> CGRect {
+        let horizontalGap: CGFloat = 6
+        let screen = menuWindow?.screen ?? NSScreen.main
+
+        var x = anchorFrame.maxX + horizontalGap
+        var rowMidY = anchorFrame.midY
+
+        if let menuWindow {
+            // `GeometryProxy.frame(in: .global)` may differ by coordinate space; pick the Y estimate closest to cursor.
+            let mouseY = NSEvent.mouseLocation.y
+            let candidateWindowBase = menuWindow
+                .convertToScreen(NSRect(origin: anchorFrame.origin, size: anchorFrame.size))
+                .midY
+            let candidateFlipped = menuWindow.frame.maxY - anchorFrame.midY
+
+            rowMidY = abs(candidateWindowBase - mouseY) <= abs(candidateFlipped - mouseY)
+                ? candidateWindowBase
+                : candidateFlipped
+
+            x = menuWindow.frame.maxX + horizontalGap
+        }
+
+        var y = rowMidY - panelSize.height / 2
+
+        if let visibleFrame = screen?.visibleFrame {
+            if x + panelSize.width > visibleFrame.maxX - 4, let menuWindow {
+                x = menuWindow.frame.minX - horizontalGap - panelSize.width
+            }
+
+            y = min(max(y, visibleFrame.minY + 4), visibleFrame.maxY - panelSize.height - 4)
+        }
+
+        return CGRect(origin: CGPoint(x: x, y: y), size: panelSize)
+    }
+
+    func close() {
+        panel?.orderOut(nil)
+    }
+
+    deinit {
+        let panel = panel
+        Task { @MainActor in
+            panel?.orderOut(nil)
+        }
+    }
+}
+
+private struct HoverIconButton: View {
+    let systemImage: String
+    let helpText: String
+    var isDestructive: Bool = false
+    let action: () -> Void
+    @State private var isHovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(foregroundColor)
+                .frame(width: 28, height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(backgroundColor)
+                )
+        }
+        .buttonStyle(.borderless)
+        .focusable(false)
+        .onHover { isHovering = $0 }
+        .help(helpText)
+    }
+
+    private var foregroundColor: Color {
+        if isDestructive {
+            return isHovering ? .red : .primary
+        }
+        return .primary
+    }
+
+    private var backgroundColor: Color {
+        if isDestructive {
+            return isHovering ? Color.red.opacity(0.12) : Color.clear
+        }
+        return isHovering ? Color.accentColor.opacity(0.14) : Color.clear
     }
 }
