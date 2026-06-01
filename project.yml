@@ -23,12 +23,27 @@ targets:
         PRODUCT_NAME: CSync
         MACOSX_DEPLOYMENT_TARGET: "14.0"
         CODE_SIGN_STYLE: Automatic
+  CSyncTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/CSyncTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: CSync
 schemes:
   CSync:
     build:
       targets:
         CSync: all
+        CSyncTests: [test]
     run:
       config: Debug
+    test:
+      config: Debug
+      targets:
+        - CSyncTests
     archive:
       config: Release

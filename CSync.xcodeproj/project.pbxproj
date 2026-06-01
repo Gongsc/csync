@@ -10,6 +10,7 @@
 		128581B3E3C0D9098B67998B /* FileSystemEventWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AE0977F9345D4C113E5B81 /* FileSystemEventWatcher.swift */; };
 		19BA401834F22D31A23F4B85 /* ConflictModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539916ABACC351A8A0FC7FE6 /* ConflictModels.swift */; };
 		1B6E1BDDF9EE3B19FCCD5AB9 /* HostStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11935BDFCD8428DFF17D975E /* HostStore.swift */; };
+		261AF2861E98ACCD34A3F420 /* SyncFailureClassifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33146D3E6D95FD0802C9D2C0 /* SyncFailureClassifierTests.swift */; };
 		29293DB312F189EA574F42C3 /* RsyncExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903BE9BBB33DCFECBB1B4480 /* RsyncExecutor.swift */; };
 		2EB2409502693211C9D548D9 /* MainWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A043E93637F1896A32EBDA07 /* MainWindowView.swift */; };
 		336903A4CEA66C2D5081C7C3 /* AutoSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A746A038181BB35D22801246 /* AutoSyncService.swift */; };
@@ -19,6 +20,7 @@
 		501F4DF805C8E59B2A62F6A3 /* ProjectStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC1F88122AFF83835E2C44D /* ProjectStore.swift */; };
 		50F1F219DEE5A46514CF905E /* SyncTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDB25EF85BDA8E2A1CAF238E /* SyncTask.swift */; };
 		5A55E693D52072FF014C25A7 /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FDEDCF78ECEF0837153CB99 /* AppSettingsView.swift */; };
+		5E1E0CD4C47B745A7D170D6F /* SyncFailureClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE88F7F302F2808B44E19860 /* SyncFailureClassifier.swift */; };
 		60F6A148FB7D7C2B5F5E742E /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897676E9085ED129B0342F26 /* Project.swift */; };
 		61C4E3F51E3B72796BC3E241 /* SyncTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5456C238D24568431D6A7A89 /* SyncTaskManager.swift */; };
 		77D89FBCDF528466FF0BA2FB /* MenuBarContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BDB463F3678B37DEF0839 /* MenuBarContentView.swift */; };
@@ -26,14 +28,27 @@
 		86B9EAAEFB3EB9867294BCCB /* HostManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC41A0073C7241FE234FCD57 /* HostManagerView.swift */; };
 		9509A4709B2B728E9974CA77 /* HostConnectionTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE01C09CDD418A2C217FA96 /* HostConnectionTester.swift */; };
 		AD8A27176320305987A7154C /* ConflictDecisionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C7A36171C9897848396E4D /* ConflictDecisionSheet.swift */; };
+		D29094BADC5ADCA5D912C4BB /* SyncNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656B258D4DF03AF1FA7F3744 /* SyncNotificationService.swift */; };
 		D38E003D3765A00016A6C815 /* RsyncProgressParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA456339D822F5DCD7B31482 /* RsyncProgressParser.swift */; };
 		E5F38EBFF23D6917B7A1A4A9 /* ProjectEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15C791F23EB5936540E2373 /* ProjectEditorView.swift */; };
 		E628837313B1D5599C585FA8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AAC1FE8F930BC6BB129BB5 /* AppState.swift */; };
+		E88A9D0123C6A936F6B3FFCD /* DiagnosticsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619327704AF7357E57E31B42 /* DiagnosticsStore.swift */; };
 		E8F909FD6BCAAC4B2FA845FA /* CSyncApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4B58028676CB01004DCCD6 /* CSyncApp.swift */; };
 		E9E2D0C7CE0D9815ACB4B2EF /* ConflictBaselineStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EF04193FCDB96366CF34D54 /* ConflictBaselineStore.swift */; };
+		EA444508F54FCA1119E3C48C /* RuntimeEnvironmentChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F0B3987A6D3EF2E814DE5C /* RuntimeEnvironmentChecker.swift */; };
 		ECD3BD30399053132D1F93DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68B513EFE7725E13B49DDFB7 /* Assets.xcassets */; };
 		F14AC8EAF4A3D2FFBE9E9132 /* ConflictDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E955E8104D24A6BDC3517E /* ConflictDetector.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F4FEC22DA7C5F28A82420E95 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 288B7A3016315383DF17A54E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAF6AA009B3794E62645A92B;
+			remoteInfo = CSync;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		0941680FB0DD8C10E6455EAF /* HostPasswordCipher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostPasswordCipher.swift; sourceTree = "<group>"; };
@@ -41,9 +56,13 @@
 		103FECA7AF8E44A5FA982506 /* SSHProcessEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHProcessEnvironment.swift; sourceTree = "<group>"; };
 		11935BDFCD8428DFF17D975E /* HostStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostStore.swift; sourceTree = "<group>"; };
 		16E955E8104D24A6BDC3517E /* ConflictDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictDetector.swift; sourceTree = "<group>"; };
+		33146D3E6D95FD0802C9D2C0 /* SyncFailureClassifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncFailureClassifierTests.swift; sourceTree = "<group>"; };
 		539916ABACC351A8A0FC7FE6 /* ConflictModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictModels.swift; sourceTree = "<group>"; };
 		53AAC1FE8F930BC6BB129BB5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		5456C238D24568431D6A7A89 /* SyncTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTaskManager.swift; sourceTree = "<group>"; };
+		619327704AF7357E57E31B42 /* DiagnosticsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsStore.swift; sourceTree = "<group>"; };
+		656B258D4DF03AF1FA7F3744 /* SyncNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncNotificationService.swift; sourceTree = "<group>"; };
+		67F0B3987A6D3EF2E814DE5C /* RuntimeEnvironmentChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuntimeEnvironmentChecker.swift; sourceTree = "<group>"; };
 		68B513EFE7725E13B49DDFB7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6FDEDCF78ECEF0837153CB99 /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
 		75D918DF9A4A6520E0C6193A /* FileSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSnapshot.swift; sourceTree = "<group>"; };
@@ -61,8 +80,10 @@
 		DCC1F88122AFF83835E2C44D /* ProjectStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectStore.swift; sourceTree = "<group>"; };
 		E15C791F23EB5936540E2373 /* ProjectEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectEditorView.swift; sourceTree = "<group>"; };
 		E50A9ABEA2DEF76473BCFF54 /* ManagedHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedHost.swift; sourceTree = "<group>"; };
+		E9E1E21FD8D33148A8F60347 /* CSyncTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CSyncTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF66A8414916AECEB08B5BFC /* CSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDB25EF85BDA8E2A1CAF238E /* SyncTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncTask.swift; sourceTree = "<group>"; };
+		FE88F7F302F2808B44E19860 /* SyncFailureClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncFailureClassifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -83,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				EF66A8414916AECEB08B5BFC /* CSync.app */,
+				E9E1E21FD8D33148A8F60347 /* CSyncTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,6 +114,7 @@
 			children = (
 				B12BF4E88F8BA341F525D8D9 /* CSync */,
 				FCE5C85BA1D828AA4CC78A61 /* CSync */,
+				E88647FF17562D61EC208E98 /* CSyncTests */,
 				256F65EDDFF3EF0FD2834C7A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -138,12 +161,25 @@
 			children = (
 				A746A038181BB35D22801246 /* AutoSyncService.swift */,
 				0EF04193FCDB96366CF34D54 /* ConflictBaselineStore.swift */,
+				619327704AF7357E57E31B42 /* DiagnosticsStore.swift */,
 				0941680FB0DD8C10E6455EAF /* HostPasswordCipher.swift */,
 				11935BDFCD8428DFF17D975E /* HostStore.swift */,
 				DCC1F88122AFF83835E2C44D /* ProjectStore.swift */,
+				67F0B3987A6D3EF2E814DE5C /* RuntimeEnvironmentChecker.swift */,
+				FE88F7F302F2808B44E19860 /* SyncFailureClassifier.swift */,
+				656B258D4DF03AF1FA7F3744 /* SyncNotificationService.swift */,
 				5456C238D24568431D6A7A89 /* SyncTaskManager.swift */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		E88647FF17562D61EC208E98 /* CSyncTests */ = {
+			isa = PBXGroup;
+			children = (
+				33146D3E6D95FD0802C9D2C0 /* SyncFailureClassifierTests.swift */,
+			);
+			name = CSyncTests;
+			path = Tests/CSyncTests;
 			sourceTree = "<group>";
 		};
 		E8E902E4A0B53F4974F53C99 /* Engine */ = {
@@ -175,6 +211,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4E2C9AE75937E7FF850ED618 /* CSyncTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 74D50F1BB09DE62470E937F0 /* Build configuration list for PBXNativeTarget "CSyncTests" */;
+			buildPhases = (
+				B62473E05696029C490F233D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D8FAC44DC18B32DA4F6A6AB5 /* PBXTargetDependency */,
+			);
+			name = CSyncTests;
+			packageProductDependencies = (
+			);
+			productName = CSyncTests;
+			productReference = E9E1E21FD8D33148A8F60347 /* CSyncTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		FAF6AA009B3794E62645A92B /* CSync */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FB8E71D79315B3874A0B80CF /* Build configuration list for PBXNativeTarget "CSync" */;
@@ -222,6 +276,7 @@
 			projectRoot = "";
 			targets = (
 				FAF6AA009B3794E62645A92B /* CSync */,
+				4E2C9AE75937E7FF850ED618 /* CSyncTests */,
 			);
 		};
 /* End PBXProject section */
@@ -238,6 +293,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B62473E05696029C490F233D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				261AF2861E98ACCD34A3F420 /* SyncFailureClassifierTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BA7DEE83BC07C2D16FE3C584 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -250,6 +313,7 @@
 				AD8A27176320305987A7154C /* ConflictDecisionSheet.swift in Sources */,
 				F14AC8EAF4A3D2FFBE9E9132 /* ConflictDetector.swift in Sources */,
 				19BA401834F22D31A23F4B85 /* ConflictModels.swift in Sources */,
+				E88A9D0123C6A936F6B3FFCD /* DiagnosticsStore.swift in Sources */,
 				84EC162AA2CA17A62616F647 /* FileSnapshot.swift in Sources */,
 				128581B3E3C0D9098B67998B /* FileSystemEventWatcher.swift in Sources */,
 				9509A4709B2B728E9974CA77 /* HostConnectionTester.swift in Sources */,
@@ -264,13 +328,24 @@
 				501F4DF805C8E59B2A62F6A3 /* ProjectStore.swift in Sources */,
 				29293DB312F189EA574F42C3 /* RsyncExecutor.swift in Sources */,
 				D38E003D3765A00016A6C815 /* RsyncProgressParser.swift in Sources */,
+				EA444508F54FCA1119E3C48C /* RuntimeEnvironmentChecker.swift in Sources */,
 				3E875892E3AA4680BD198A90 /* SSHProcessEnvironment.swift in Sources */,
+				5E1E0CD4C47B745A7D170D6F /* SyncFailureClassifier.swift in Sources */,
+				D29094BADC5ADCA5D912C4BB /* SyncNotificationService.swift in Sources */,
 				50F1F219DEE5A46514CF905E /* SyncTask.swift in Sources */,
 				61C4E3F51E3B72796BC3E241 /* SyncTaskManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D8FAC44DC18B32DA4F6A6AB5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAF6AA009B3794E62645A92B /* CSync */;
+			targetProxy = F4FEC22DA7C5F28A82420E95 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		09F789EDEABA0CC35A7D89F3 /* Release */ = {
@@ -288,6 +363,22 @@
 				SDKROOT = macosx;
 			};
 			name = Release;
+		};
+		2040A512456987CF7DB1C5BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CSync.app/Contents/MacOS/CSync";
+			};
+			name = Debug;
 		};
 		2CF2D350652467F60CB86ED2 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -434,6 +525,22 @@
 			};
 			name = Release;
 		};
+		BCA00629976A7A0C2A90CAD8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CSync.app/Contents/MacOS/CSync";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -442,6 +549,15 @@
 			buildConfigurations = (
 				3B52BB71DDC171A97686D25D /* Debug */,
 				4EFB0344EA2353D23338AF68 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		74D50F1BB09DE62470E937F0 /* Build configuration list for PBXNativeTarget "CSyncTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2040A512456987CF7DB1C5BD /* Debug */,
+				BCA00629976A7A0C2A90CAD8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

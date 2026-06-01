@@ -18,7 +18,11 @@ final class SyncTaskManager: ObservableObject {
     private var manuallyCancelledProjectIDs: Set<UUID> = []
     private var activeConflictRequests: [UUID: ConflictResolutionRequest] = [:]
     private var syncFileStates: [UUID: [String: SyncFileStatus]] = [:]
+    private var autoRetryAttemptsByProjectID: [UUID: Int] = [:]
+    private var autoRetryWorkItemByProjectID: [UUID: DispatchWorkItem] = [:]
     private let maxRecordedFiles = 200
+    private let maxAutoRetryAttempts = 2
+    private let autoRetryBaseDelay: TimeInterval = 2
 
     private let executor = RsyncExecutor()
     private let conflictDetector = ConflictDetector()
@@ -26,6 +30,7 @@ final class SyncTaskManager: ObservableObject {
 
     var onProjectSynced: ((UUID, Date) -> Void)?
     var onConflictDetected: ((ConflictResolutionRequest) -> Void)?
+    var onProjectSyncFailed: ((UUID, String, String) -> Void)?
     var passwordProvider: ((UUID) -> String?)?
 
     var orderedTasks: [SyncTask] {
@@ -62,8 +67,17 @@ final class SyncTaskManager: ObservableObject {
         )
     }
 
-    func enqueueSync(for project: Project, reason: String = "手动触发", triggerKind: SyncTriggerKind = .manual) {
+    func enqueueSync(
+        for project: Project,
+        reason: String = "手动触发",
+        triggerKind: SyncTriggerKind = .manual,
+        isAutoRetry: Bool = false
+    ) {
         projectsByID[project.id] = project
+
+        if !isAutoRetry {
+            clearAutoRetryState(for: project.id)
+        }
 
         if runningProcesses[project.id] != nil || pendingProjectIDs.contains(project.id) {
             return
@@ -174,10 +188,11 @@ final class SyncTaskManager: ObservableObject {
     }
 
     func enqueueSync(for projects: [Project], reason: String = "批量触发", triggerKind: SyncTriggerKind = .manual) {
-        projects.forEach { enqueueSync(for: $0, reason: reason, triggerKind: triggerKind) }
+        projects.forEach { enqueueSync(for: $0, reason: reason, triggerKind: triggerKind, isAutoRetry: false) }
     }
 
     func cancel(projectID: UUID) {
+        clearAutoRetryState(for: projectID)
         pendingProjectIDs.removeAll(where: { $0 == projectID })
 
         if let request = activeConflictRequests.removeValue(forKey: projectID) {
@@ -221,7 +236,50 @@ final class SyncTaskManager: ObservableObject {
             return
         }
 
-        enqueueSync(for: project, reason: "失败重试", triggerKind: .manual)
+        enqueueSync(for: project, reason: "失败重试", triggerKind: .manual, isAutoRetry: false)
+    }
+
+    private func clearAutoRetryState(for projectID: UUID) {
+        autoRetryWorkItemByProjectID[projectID]?.cancel()
+        autoRetryWorkItemByProjectID[projectID] = nil
+        autoRetryAttemptsByProjectID[projectID] = 0
+    }
+
+    private func clearPendingAutoRetryWorkItem(for projectID: UUID) {
+        autoRetryWorkItemByProjectID[projectID]?.cancel()
+        autoRetryWorkItemByProjectID[projectID] = nil
+    }
+
+    private func scheduleAutoRetryIfNeeded(projectID: UUID, projectName: String, message: String) {
+        guard let project = projectsByID[projectID] else { return }
+        guard SyncFailureClassifier.isLikelyTransientNetworkFailure(message: message) else { return }
+
+        let currentAttempt = autoRetryAttemptsByProjectID[projectID] ?? 0
+        guard currentAttempt < maxAutoRetryAttempts else { return }
+
+        let nextAttempt = currentAttempt + 1
+        autoRetryAttemptsByProjectID[projectID] = nextAttempt
+
+        let delay = autoRetryBaseDelay * pow(2, Double(nextAttempt - 1))
+        let reason = "网络抖动自动重试(\(nextAttempt)/\(maxAutoRetryAttempts))"
+        let triggerKind = tasks[projectID]?.triggerKind ?? .manual
+
+        clearPendingAutoRetryWorkItem(for: projectID)
+
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.autoRetryWorkItemByProjectID[projectID] = nil
+            self.enqueueSync(for: project, reason: reason, triggerKind: triggerKind, isAutoRetry: true)
+        }
+
+        autoRetryWorkItemByProjectID[projectID] = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+
+        tasks[projectID] = makeTask(
+            projectID: projectID,
+            projectName: projectName,
+            state: .queued(reason: reason)
+        )
     }
 
     private func scheduleNextIfNeeded() {
@@ -247,11 +305,13 @@ final class SyncTaskManager: ObservableObject {
             password = try resolvePassword(for: project)
         } catch {
             preflightingProjectIDs.remove(project.id)
+            let message = error.localizedDescription
             tasks[project.id] = makeTask(
                 projectID: project.id,
                 projectName: project.name,
-                state: .failed(error.localizedDescription)
+                state: .failed(message)
             )
+            onProjectSyncFailed?(project.id, project.name, message)
             scheduleNextIfNeeded()
             return
         }
@@ -329,11 +389,13 @@ final class SyncTaskManager: ObservableObject {
             }
         case .failure(let error):
             preflightingProjectIDs.remove(project.id)
+            let message = "冲突检测失败：\(error.localizedDescription)"
             tasks[project.id] = makeTask(
                 projectID: project.id,
                 projectName: project.name,
-                state: .failed("冲突检测失败：\(error.localizedDescription)")
+                state: .failed(message)
             )
+            onProjectSyncFailed?(project.id, project.name, message)
             scheduleNextIfNeeded()
         }
     }
@@ -442,6 +504,7 @@ final class SyncTaskManager: ObservableObject {
         runningProcesses[projectID] = nil
 
         if manuallyCancelledProjectIDs.remove(projectID) != nil {
+            clearAutoRetryState(for: projectID)
             tasks[projectID] = makeTask(
                 projectID: projectID,
                 projectName: projectName,
@@ -454,6 +517,7 @@ final class SyncTaskManager: ObservableObject {
 
         switch result {
         case .success:
+            clearAutoRetryState(for: projectID)
             let date = Date()
             tasks[projectID] = makeTask(
                 projectID: projectID,
@@ -474,12 +538,17 @@ final class SyncTaskManager: ObservableObject {
                     recordSyncLine(projectID: projectID, line: line)
                 }
 
+            let failureMessage = error.localizedDescription
+
             tasks[projectID] = makeTask(
                 projectID: projectID,
                 projectName: projectName,
-                state: .failed(error.localizedDescription),
+                state: .failed(failureMessage),
                 fileResults: fileResults(for: projectID)
             )
+
+            onProjectSyncFailed?(projectID, projectName, failureMessage)
+            scheduleAutoRetryIfNeeded(projectID: projectID, projectName: projectName, message: failureMessage)
         }
 
         syncFileStates[projectID] = nil

@@ -15,9 +15,14 @@ final class AppState: ObservableObject {
     let autoSyncService: AutoSyncService
     let hostPasswordCipher: HostPasswordCipher
     let hostConnectionTester: HostConnectionTester
+    let runtimeEnvironmentChecker: RuntimeEnvironmentChecker
+    let diagnosticsStore: DiagnosticsStore
+    let notificationService: SyncNotificationService
 
     @Published var activeConflictRequest: ConflictResolutionRequest?
     @Published var projectEditorContext: ProjectEditorContext?
+    @Published var latestEnvironmentStatus: RuntimeEnvironmentStatus?
+    @Published var latestDiagnosticsExportURL: URL?
     private var pendingConflictRequests: [ConflictResolutionRequest] = []
     private var cancellables: Set<AnyCancellable> = []
     private var hostPasswordCache: [UUID: String] = [:]
@@ -29,7 +34,10 @@ final class AppState: ObservableObject {
         syncManager: SyncTaskManager = SyncTaskManager(),
         autoSyncService: AutoSyncService = AutoSyncService(),
         hostPasswordCipher: HostPasswordCipher = .shared,
-        hostConnectionTester: HostConnectionTester = HostConnectionTester()
+        hostConnectionTester: HostConnectionTester = HostConnectionTester(),
+        runtimeEnvironmentChecker: RuntimeEnvironmentChecker = RuntimeEnvironmentChecker(),
+        diagnosticsStore: DiagnosticsStore = DiagnosticsStore(),
+        notificationService: SyncNotificationService = .shared
     ) {
         self.projectStore = projectStore
         self.hostStore = hostStore
@@ -37,15 +45,46 @@ final class AppState: ObservableObject {
         self.autoSyncService = autoSyncService
         self.hostPasswordCipher = hostPasswordCipher
         self.hostConnectionTester = hostConnectionTester
+        self.runtimeEnvironmentChecker = runtimeEnvironmentChecker
+        self.diagnosticsStore = diagnosticsStore
+        self.notificationService = notificationService
 
         bindStateForwarding()
 
         self.syncManager.onProjectSynced = { [weak self] projectID, date in
-            self?.projectStore.markSynced(projectID: projectID, at: date)
+            guard let self else { return }
+            self.projectStore.markSynced(projectID: projectID, at: date)
+
+            let projectName = self.projectStore.project(for: projectID)?.name ?? "未知项目"
+            self.diagnosticsStore.append(
+                level: "info",
+                category: "sync",
+                message: "同步成功",
+                metadata: [
+                    "projectID": projectID.uuidString,
+                    "projectName": projectName
+                ]
+            )
+            self.notificationService.notifySyncSucceeded(projectName: projectName)
         }
 
         self.syncManager.onConflictDetected = { [weak self] request in
             self?.enqueueConflictRequest(request)
+        }
+
+        self.syncManager.onProjectSyncFailed = { [weak self] projectID, projectName, message in
+            guard let self else { return }
+
+            self.diagnosticsStore.append(
+                level: "error",
+                category: "sync",
+                message: message,
+                metadata: [
+                    "projectID": projectID.uuidString,
+                    "projectName": projectName
+                ]
+            )
+            self.notificationService.notifySyncFailed(projectName: projectName, message: message)
         }
 
         self.syncManager.passwordProvider = { [weak self] projectID in
@@ -61,6 +100,7 @@ final class AppState: ObservableObject {
         }
 
         migrateHostAuthPreferencesIfNeeded()
+        self.notificationService.requestAuthorizationIfNeeded()
 
         self.autoSyncService.start(projectStore: projectStore, syncManager: syncManager)
     }
@@ -207,6 +247,27 @@ final class AppState: ObservableObject {
 
     func syncAllProjects() {
         syncManager.enqueueSync(for: projectStore.projects, reason: "手动批量触发", triggerKind: .manual)
+    }
+
+    func runEnvironmentCheck() {
+        latestEnvironmentStatus = runtimeEnvironmentChecker.check()
+
+        if let status = latestEnvironmentStatus {
+            diagnosticsStore.append(
+                level: status.isHealthy ? "info" : "warning",
+                category: "environment",
+                message: status.isHealthy ? "环境检查通过" : "环境检查发现问题",
+                metadata: [
+                    "rsyncPath": status.rsyncPath ?? "",
+                    "sshPath": status.sshPath ?? "",
+                    "issues": status.issues.joined(separator: " | ")
+                ]
+            )
+        }
+    }
+
+    func exportDiagnostics() {
+        latestDiagnosticsExportURL = diagnosticsStore.exportSnapshot()
     }
 
     func setAutoSyncEnabled(_ enabled: Bool, for projectID: UUID) {
